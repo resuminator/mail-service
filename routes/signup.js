@@ -1,15 +1,15 @@
 const router = require("express").Router();
 const { EMAIL } = require("../config");
+const { SENDER_NAME, SUBJECT } = require("../constants");
 const transporter = require("../transporter");
 
 router.post("/", (req, res) => {
   const { recepient, name } = req.body;
 
   const mailOptions = {
-    from: EMAIL,
+    from: `${SENDER_NAME} <${EMAIL}>`,
     to: recepient,
-    subject: "🎉 Welcome to Resuminator Early Access Program!",
-    text: "Wooohooo it works!!",
+    subject: SUBJECT,
     template: "index",
     context: {
       name,
@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
     .then(() => {
       return res
         .status(200)
-        .json({ msg: "you should receive an email from us" });
+        .json({ status: "Delivered", to: recepient, at: new Date() });
     })
     .catch((err) => {
       console.log(err);
