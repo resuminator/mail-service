@@ -9,7 +9,13 @@ router.post("/", (req, res) => {
   const mailOptions = {
     from: `${SENDER_NAME} <${EMAIL}>`,
     to: recepient,
+    replyTo: EMAIL,
     subject: SUBJECT,
+    headers: {
+      "x-priority": "1",
+      "x-msmail-priority": "High",
+      importance: "high",
+    },
     template: "index",
     context: {
       name,
@@ -19,6 +25,7 @@ router.post("/", (req, res) => {
   transporter
     .sendMail(mailOptions)
     .then(() => {
+      console.log(`[INFO] Mail Delivered to ${name} : ${new Date()}`);
       return res
         .status(200)
         .json({ status: "Delivered", to: recepient, at: new Date() });
